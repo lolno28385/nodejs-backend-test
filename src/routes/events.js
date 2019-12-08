@@ -1,4 +1,3 @@
-import { version } from '../../package.json';
 import { Router } from 'express';
 import eventsHandlers from '../controllers/events';
 
@@ -7,8 +6,8 @@ export default ({ asyncHandler, db }) => {
 	const {getAllEvents, addEvent } = eventsHandlers({asyncHandler, db})
 
 	// mount the facets resource
-	api.post('/', addEvent);
-	api.get('/', getAllEvents)
+	router.post('/', addEvent);
+	router.get('/', getAllEvents)
 	
-	return api;
+	return router;
 }

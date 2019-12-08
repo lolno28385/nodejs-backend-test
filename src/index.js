@@ -5,8 +5,10 @@ import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import initializeDb from './db';
 import middleware from './middleware';
-import api from './routes/events';
-import config from './config.json';
+import events from './routes/events';
+import config from './config.json';i
+import { version } from '../package.json';
+
 
 let app = express();
 app.server = http.createServer(app);
@@ -30,7 +32,10 @@ initializeDb( db => {
 	app.use(middleware({ config, db }));
 
 	// event router
-	app.use('/', api({ config, db }));
+	app.use('/', events({ config, db }));
+	app.use('/meta', (req, res, next) => {
+		res.json({version})
+	})
 
 	app.server.listen(process.env.PORT || config.port, () => {
 		console.log(`Started on port ${app.server.address().port}`);
