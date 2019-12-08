@@ -8,7 +8,7 @@
     "build": "babel src -s -D -d dist --presets es2015,stage-0",
     "start": "node dist",
     "prestart": "npm run -s build",
-    "test": "eslint src"
+    "test": "npm run build && mocha dist/**/*.test.js"
   },
   "eslintConfig": {
     "extends": "eslint:recommended",
@@ -29,12 +29,15 @@
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.13.3",
+    "chai": "^4.2.0",
     "compression": "^1.5.2",
     "cors": "^2.7.1",
     "express": "^4.13.3",
     "express-async-handler": "^1.1.4",
+    "mongoose": "^5.7.14",
     "morgan": "^1.8.0",
-    "resource-router-middleware": "^0.6.0"
+    "resource-router-middleware": "^0.6.0",
+    "sinon": "^7.5.0"
   },
   "devDependencies": {
     "babel-cli": "^6.9.0",

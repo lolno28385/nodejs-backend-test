@@ -6,7 +6,8 @@ import bodyParser from 'body-parser';
 import initializeDb from './db';
 import middleware from './middleware';
 import events from './routes/events';
-import config from './config.json';i
+import config from './config.json';
+import asyncHandler from 'express-async-handler';
 import { version } from '../package.json';
 
 
@@ -28,11 +29,19 @@ app.use(bodyParser.json({
 // connect to db
 initializeDb( db => {
 
+	const dependencies = {
+		config,
+		db,
+		asyncHandler
+	}
+
 	// internal middleware
-	app.use(middleware({ config, db }));
+	app.use(middleware(dependencies));
 
 	// event router
-	app.use('/', events({ config, db }));
+	app.use('/', events(dependencies));
+
+	//meta router for app info, current version etc
 	app.use('/meta', (req, res, next) => {
 		res.json({version})
 	})

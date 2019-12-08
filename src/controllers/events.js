@@ -1,6 +1,3 @@
-import resource from 'resource-router-middleware';
-import facets from '../models/facets';
-
 export default ({asyncHandler}) => {
 	const addEvent = async (req, res) => {
 
@@ -22,7 +19,7 @@ export default ({asyncHandler}) => {
 			  'location.latLng.lat': data.location.latLng.lat,
 			},
 			{
-			  [{ start: { $gte: data.start } }, { end: { $lte: data.end } }],
+			  $and: [{ start: { $gte: data.start } }, { end: { $lte: data.end } }],
 			},
 		  ],
 		});
