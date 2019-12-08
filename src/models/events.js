@@ -8,6 +8,7 @@ const eventSchema = new Schema(
     start: { type: Date, required: true },
     title: { type: String, required: true },
     details: { type: String, required: true },
+    owner: { type: String, required: true },
     location: {
       address: { type: String, required: true },
       latLng: {
@@ -21,6 +22,6 @@ const eventSchema = new Schema(
   },
 );
 
-const Event = mongoose.model('Meme', eventSchema);
+const Event = mongoose.model('Event', eventSchema);
 
 export default Event;

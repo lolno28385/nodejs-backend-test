@@ -9,4 +9,7 @@ I have used Factory functions for routers and controllers, this allows to inject
  ## Enable es6 in codebase through babel compiler
  The case for es6 is documented infinite times thoughout the internet, but I like to empasize that ES6 is the future of Javascript and any codebase planning to follow ecosystem standards must follow and ES6 makes developer's lifes much much easier and its clean and redable syntax is much more welcoming to developers.
 
- 
+Here's a more detailed explanation:
+
+http://blog.thefirehoseproject.com/posts/12-reasons-es6-future-javascript-web-development/
+
