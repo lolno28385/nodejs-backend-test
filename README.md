@@ -1,57 +1,20 @@
-Express & ES6 REST API Boilerplate
-==================================
+# Code Test Brickbase
 
-This is a straightforward boilerplate for building REST APIs with ES6 and Express.
+This repository contains code written in NodeJS with errors, bug and incorrect code practice. Your tasks are to:
 
-- ES6 support via [babel](https://babeljs.io)
-- REST resources as middleware via [resource-router-middleware](https://github.com/developit/resource-router-middleware)
-- CORS support via [cors](https://github.com/troygoode/node-cors)
-- Body Parsing via [body-parser](https://github.com/expressjs/body-parser)
+## Task 1
+1. Create Unit and Integration Tests up to for at least 70% test coverage
+2. Find and remove all bugs and errors
+3. Improve the code quality accordingly
+4. Create a SOLUTIONS.md file listing all the correction you made and why you took the decisions you took. This is to help us ascertain your problem solving skills
 
-> Tip: If you are using [Mongoose](https://github.com/Automattic/mongoose), you can automatically expose your Models as REST resources using [restful-mongoose](https://git.io/restful-mongoose).
+## Task 2
+1. Create a new API for User
+2. Create a Models for a User
+3. For each event created, connect that event with a user such that every event has a user
+4. Create a way to retrieve all events for a user
+5. Make it possible to return all a user and all the events created by that user
 
 
-
-Getting Started
----------------
-
-```sh
-# clone it
-git clone git@github.com:developit/express-es6-rest-api.git
-cd express-es6-rest-api
-
-# Make it your own
-rm -rf .git && git init && npm init
-
-# Install dependencies
-npm install
-
-# Start development live-reload server
-PORT=8080 npm run dev
-
-# Start production server:
-PORT=8080 npm start
-```
-Docker Support
-------
-```sh
-cd express-es6-rest-api
-
-# Build your docker
-docker build -t es6/api-service .
-#            ^      ^           ^
-#          tag  tag name      Dockerfile location
-
-# run your docker
-docker run -p 8080:8080 es6/api-service
-#                 ^            ^
-#          bind the port    container tag
-#          to your host
-#          machine port   
-
-```
-
-License
--------
-
-MIT
+## Submission
+Create a private repo on github, add @michelmustapha and @rajesh-brickbase as collaborators  and send an email to michel@brickbase.io indicating that you are done with the test.
