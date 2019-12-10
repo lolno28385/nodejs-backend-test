@@ -28,23 +28,31 @@
   "author": "Jason Miller <jason@developit.ca>",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^3.0.7",
     "body-parser": "^1.13.3",
     "chai": "^4.2.0",
     "compression": "^1.5.2",
     "cors": "^2.7.1",
     "express": "^4.13.3",
     "express-async-handler": "^1.1.4",
+    "http-errors": "^1.7.3",
     "mongoose": "^5.7.14",
-    "morgan": "^1.8.0",
+    "permit": "^0.2.4",
     "resource-router-middleware": "^0.6.0",
-    "sinon": "^7.5.0"
+    "sinon": "^7.5.0",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "babel-cli": "^6.9.0",
     "babel-core": "^6.9.0",
+    "babel-eslint": "10.0.3",
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-stage-0": "^6.5.0",
-    "eslint": "^3.1.1",
-    "nodemon": "^1.9.2"
+    "eslint": "^3.19.0",
+    "eslint-config": "^0.3.0",
+    "eslint-scope": "5.0.0",
+    "nodemon": "^1.9.2",
+    "mocha": "6.2.2",
+    "mongodb-memory-server": "6.0.2"
   }
 }
