@@ -37,7 +37,8 @@
     "express-async-handler": "^1.1.4",
     "http-errors": "^1.7.3",
     "mongoose": "^5.7.14",
-    "permit": "^0.2.4",
+    "passport": "^0.4.1",
+    "passport-http": "^0.3.0",
     "resource-router-middleware": "^0.6.0",
     "sinon": "^7.5.0",
     "winston": "^3.2.1"
