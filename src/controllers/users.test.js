@@ -44,46 +44,28 @@ describe('Users controller - create user', () => {
 		email:'sinamonta@gmail.com',
 		password: 'pass123'
 	};
-	it('should return an empty 200 response  on POST /user/create', (done) => {
 
+	it('should return an empty 200 response on POST /user/create', (done) => {
+		let requester = chai.request(app).keepOpen();
+
+		requester.post('/user/create').send(newUserBody).end((err, res) => {
+			res.should.have.status(200);
+			requester.close();
+			done();
+		});
+	});
+
+	it('should return a 409 response for a duplicate request on POST /user/create', (done) => {
+		let requester = chai.request(app).keepOpen();
 
 		const check = (err, res) => {
-			res.should.have.status(200);
-			
+			res.should.have.status(409);
+			requester.close();
+			done();
 		};
-
-		var requester = chai.request(app).keepOpen();
-
-		Promise.all([
-			requester.post('/user/create'),
-			requester.post('/user/create'),
-		])
-			.then(responses => {
-				console.log(responses);
-			})
-			.then(() => {
-				requester.close();
-				done();
-			});
-		// getMockDependencies()
-		// .then(async dependencies => {
-		// 	const mockRequest = httpMocks.createRequest({
-		// 		method: 'POST',
-		// 		url: '/user/create',
-		// 		body: newUserBody,
-		// 	});
-            
-		// 	const mockResponse = httpMocks.createResponse();
-		// 	const {
-		//         create,
-		//     } = getUserHandlers(dependencies);
-    
-		// 	create(mockRequest, mockResponse);
-            
-		// 	const actualResponseCode = mockResponse._getStatusCode();
-		// 	const expectedResponseCode = 200;
-		// 	equal(actualResponseCode, expectedResponseCode);
-		// 	done();        
-		// });
+		
+		requester.post('/user/create').send(newUserBody).end(() => {
+			requester.post('/user/create').send(newUserBody).end(check);
+		});
 	});
 });
