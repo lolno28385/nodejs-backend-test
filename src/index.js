@@ -48,16 +48,21 @@ app.use(bodyParser.json({
 	limit : process.env.bodyLimit
 }));
 
+const dependencies = {
+	asyncHandler,
+	logger,
+	errors,
+	db: {},
+};
+
+//event router
+app.use('/event', events(dependencies));
+app.use('/user', users(dependencies));
 
 
 // connect to db
 initializeDb( db => {
-	const dependencies = {
-		asyncHandler,
-		logger,
-		errors,
-		db,
-	};
+	dependencies.db = db;
 
 	//internal middlewares
 	app.use(middleware(dependencies));
@@ -66,10 +71,7 @@ initializeDb( db => {
 	app.use(passport.initialize());
 	createAuthentication({ passport });
 
-	//event router
-	app.use('/event', events(dependencies));
-	app.use('/user', users(dependencies));
-
+	
 	//meta router for app info, current version etc
 	app.use('/meta', (req, res) => {
 		res.json({version});
@@ -98,6 +100,7 @@ initializeDb( db => {
 				stack: error.stack
 			});
 		}
+		console.log(error);
 		return res.json({
 			message: error.message
 		});
