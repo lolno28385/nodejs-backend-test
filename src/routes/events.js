@@ -1,13 +1,13 @@
 import { Router } from 'express';
 import eventsHandlers from '../controllers/events';
 
-export default ({ asyncHandler, db }) => {
+export default (deps) => {
 	let router = Router();
-	const {getAllEvents, addEvent } = eventsHandlers({asyncHandler, db})
+	const {getAllEvents, addEvent } = eventsHandlers(deps);
 
 	// mount the facets resource
 	router.post('/', addEvent);
-	router.get('/', getAllEvents)
+	router.get('/', getAllEvents);
 	
 	return router;
-}
+};

@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
 
-const { Schema } = mongoose;
+const { Schema, Schema: {Types} } = mongoose;
 
 const userSchema = new Schema(
   {
-    firstName: { type: Date, required: true },
-    lastName: { type: Date, required: true },
-    email: { type: String, required: true, unique: true },
-    passwordHash: { type: String, required: true },
+    firstName: { type: Types.String, required: true },
+    lastName: { type: Types.String, required: true },
+    email: { type: Types.String, required: true, unique: true },
+    passwordHash: { type: Types.String, required: true },
   },
   {
     timestamps: true,
