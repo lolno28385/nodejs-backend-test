@@ -3,7 +3,7 @@ import createError from 'http-errors';
 export default {
 	generalError: (context) => (createError(
 		500,
-		'an error has happened',
+		'an internal error has happened',
 		{
 			description: 'an unforseen error has happened',
 			expose: (process.env.NODE_ENV !== 'development'),
@@ -12,18 +12,27 @@ export default {
 	)),
 	alreadyRegistered: (context) => (createError(
 		409,
-		'Conflict',
+		'can not process request',
 		{
-			description: 'user already exists',
+			description: 'this user has already registered',
 			expose: (process.env.NODE_ENV !== 'development'),
 			context
 		}
 	)),
 	errorhashing: (context) => (createError(
 		500,
-		'InternalError',
+		'an internal error has happened',
 		{
 			description: 'user already exists',
+			expose: (process.env.NODE_ENV !== 'development'),
+			context
+		}
+	)),
+	userNotFound: (context) => (createError(
+		404,
+		'can not process request',
+		{
+			description: 'user does not exist',
 			expose: (process.env.NODE_ENV !== 'development'),
 			context
 		}

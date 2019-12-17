@@ -14,7 +14,6 @@ import createAuthentication from './lib/authentication';
 import passport from 'passport';
 import { config } from 'dotenv';
 
-
 config();
 
 //set up logger
@@ -78,7 +77,7 @@ initializeDb( db => {
 	});
 
 	//error handler, must be after everything else
-	app.use((error, req, res, next) => { 
+	app.use((error, req, res, next) => { //eslint-disable-line
 		if(!error){
 			error = errors.generalError(
 				{
@@ -92,15 +91,16 @@ initializeDb( db => {
 		//send response
 		res.status(error.status || 500);
 
-		logger.error(`error has happened: ${ error.message }`);
+		// logger.error(`error has happened: ${ error.message }`);
 
-		if (process.env.NODE_ENV !== 'development'){
+		if (process.env.NODE_ENV === 'development'){
 			return res.json({
 				message: error.message,
-				stack: error.stack
+				stack: error.stack,
+				context: error.context || 'none'
 			});
 		}
-		console.log(error);
+
 		return res.json({
 			message: error.message
 		});

@@ -4,7 +4,7 @@
   "description": "Starter project for an ES6 RESTful Express API",
   "main": "dist",
   "scripts": {
-    "dev": "nodemon -w src --exec \"babel-node dist\"",
+    "dev": "nodemon -w src --exec \"npm run build && npm run start\"",
     "build": "babel src -s -D -d dist",
     "start": "node dist",
     "prestart": "npm run -s build",

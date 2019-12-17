@@ -6,8 +6,8 @@ export default (deps) => {
 	const { create, update } = getUserHandlers(deps);
 
 	// mount the facets resource
-	router.post('/create', create);
-	router.get('/update', update);
+	router.post('/', create);
+	router.patch('/', update);
 	
 	return router;
 };

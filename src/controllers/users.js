@@ -3,7 +3,7 @@ import User from '../models/users';
 
 
 export default ({asyncHandler, logger, errors}) => {
-	const createNewUser = async(req, res, next) => {
+	const createNewUser = async(req, res, next) => { //eslint-disable-line
 		const {
 			firstName,
 			lastName,
@@ -17,7 +17,7 @@ export default ({asyncHandler, logger, errors}) => {
 		const alreadyRegistered = await User.findOne({email});
 		if(alreadyRegistered){
 			logger.info(`1.1 - already registered - signup request email: ${email}`);
-			throw errors.alreadyRegistered({...req.body, comment: 'already registered', alreadyRegistered});
+			throw errors.alreadyRegistered({body: req.body, comment: 'already registered', alreadyRegistered});
 		}
 
 		//hash password
@@ -48,22 +48,20 @@ export default ({asyncHandler, logger, errors}) => {
 
 		logger.info(`update user call  - started -  ${email}`);
     
-		const passwordHash = (password) ? await bcrypt.hash(password, 10) : null;
-        
-		const update = Object.assign({}, {
-			firstName,
-			lastName,
-			passwordHash,
-			email
-		});
-        
-		const newUser = User.findOneAndUpdate({email}, update);
+		const passwordHash = (password) ? await bcrypt.hash(password, 10) : undefined;
+		
+		let update = Object.assign({}, 
+			firstName && {firstName},
+			lastName && {lastName},
+			passwordHash && {passwordHash},
+			email && {email}
+		);
+
+		const newUser = await User.findOneAndUpdate({email}, {...update}, {new: true});
         
 		if (!newUser) {
 			logger.info(`update user call  - user not found -  ${email}`);
-			throw errors.userNotFound({
-				comment: 'user not found'
-			});
+			throw errors.userNotFound();
 		}
 
 		logger.info(`update user call  - finished -  ${email}`);
