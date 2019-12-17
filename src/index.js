@@ -6,14 +6,16 @@ import initializeDb from './lib/db';
 import middleware from './middleware';
 import events from './routes/events';
 import users from './routes/users';
-import config from './config.json';
 import asyncHandler from 'express-async-handler';
 import { version } from '../package.json';
 import winston, { transports } from 'winston';
 import errors from './lib/errors';
 import createAuthentication from './lib/authentication';
 import passport from 'passport';
+import { config } from 'dotenv';
 
+
+config();
 
 //set up logger
 const logger = winston.createLogger({
@@ -26,7 +28,8 @@ const logger = winston.createLogger({
 			format: winston.format.combine(
 				winston.format.colorize(),
 				winston.format.simple()
-			)
+			),
+			silent: (process.env.NODE_ENV === 'test')
 		})
 	]
 });
@@ -38,22 +41,22 @@ app.server = http.createServer(app);
 
 // 3rd party middleware
 app.use(cors({
-	exposedHeaders: config.corsHeaders
+	exposedHeaders: ['Link']
 }));
 
 app.use(bodyParser.json({
-	limit : config.bodyLimit
+	limit : process.env.bodyLimit
 }));
+
+
 
 // connect to db
 initializeDb( db => {
 	const dependencies = {
-		config,
-		db,
 		asyncHandler,
 		logger,
 		errors,
-		app,
+		db,
 	};
 
 	//internal middlewares
@@ -73,7 +76,7 @@ initializeDb( db => {
 	});
 
 	//error handler, must be after everything else
-	app.use((error, req, res, next) => {
+	app.use((error, req, res, next) => { 
 		if(!error){
 			error = errors.generalError(
 				{
@@ -100,7 +103,7 @@ initializeDb( db => {
 		});
 	});
 
-	app.server.listen(process.env.PORT || config.port, () => {
+	app.server.listen(process.env.PORT || process.env.port, () => {
 		logger.info(`Started on port ${app.server.address().port}`);
 	});
 });
