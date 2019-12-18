@@ -3,7 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import initializeDb from './lib/db';
-import middleware from './middleware';
+// import middleware from './middleware';
 import events from './routes/events';
 import users from './routes/users';
 import asyncHandler from 'express-async-handler';
@@ -28,7 +28,7 @@ const logger = winston.createLogger({
 				winston.format.colorize(),
 				winston.format.simple()
 			),
-			silent: (process.env.NODE_ENV === 'test')
+			silent: (process.env.SHOW_LOGS === 'true')
 		})
 	]
 });
@@ -64,7 +64,7 @@ initializeDb( db => {
 	dependencies.db = db;
 
 	//internal middlewares
-	app.use(middleware(dependencies));
+	//app.use(middleware(dependencies));
 
 	// initiate authentication strategies
 	app.use(passport.initialize());

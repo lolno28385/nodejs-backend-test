@@ -1,73 +1,73 @@
 import Event from '../models/events';
+import User from '../models/users';
 
-export default ({asyncHandler}) => {
-	const addEvent = async (req, res) => {
-		const data = req.body;
+export default ({ asyncHandler, errors, logger }) => {
+	const create = async (req, res) => {
+		const {
+			end,
+			start,
+			location,
+			title,
+			details,
+		} = req.body;
 
-		const dateStart = new Date(data.end);
-		dateStart.setTime(
-			dateStart.getTime() - new Date().getTimezoneOffset() * 60 * 1000,
-		);
+		const { ownerEmail: email } = req.params;
 
-		data.start = dateStart;
+		logger.info(`1 - create event - start for ${email}`, {end, start, location, title, details});
 
-		const dateEnd = new Date(data.end);
-		dateEnd.setTime(
-			dateEnd.getTime() - new Date().getTimezoneOffset() * 60 * 1000,
-		);
-	
-		data.end = dateEnd;
+
+		logger.info(`2 - create event - looking for user ${email}`, {end, start, location, title, details});
+		
+		//get owner's id
+		const user = await User.findOne({email});
+		if(!user) {
+			logger.info(`2.1 - create event - user not found ${email}`, {end, start, location, title, details});
+			throw errors.userNotFound({email});
+		}
+		const {_id: owner} = user;
+		
+		// format dates
+		const dateStart = new Date(start);
+		const dateEnd = new Date(end);
+
+		logger.info(`3 - create event - looking for existing event ${email}`, {end, start, location, title, details});
+		//check if event is not duplicate
 		const existingEvent = await Event.findOne({
-			$and: [
-				{
-					'location.latLng.lng': data.location.latLng.lng,
-					'location.latLng.lat': data.location.latLng.lat,
-				},
-				{
-					$and: [{ start: { $gte: data.start } }, { end: { $lte: data.end } }],
-				},
-			],
+			'location.lng': location.lng,
+			'location.lat': location.lat,
+			owner,
+			start: { $gte: dateStart}, 
+			end: { $lte: dateEnd},
 		});
 	
 		if (existingEvent) {
-			res.status(500).json({
-				success: false,
-				message: 'An Event already exist at this venue on this day',
-			});
-		} else {
-			Event.make(data)
-				.then((event) => {
-					res.status(200).json({
-						success: true,
-						event,
-					});
-				})
-				.catch((err) => {
-					console.log(err);
-					res.status(500).json({
-						success: false,
-						message: 'An Error Occured, please try again later',
-					});
-				});
+			logger.info(`3.1 - create event - duplicate event ${email}`, {end, start, location, title, details});
+			throw errors.eventAlreadyExists({ existingEvent });
 		}
+
+		logger.info(`4 - create event - creating event ${email}`, {end, start, location, title, details});
+		const event = new Event({
+			end,
+			start,
+			location,
+			title,
+			details,
+			owner
+		});
+
+		await event.save();
+
+		logger.info(`2 - create event - finished processing ${email}`, {end, start, location, title, details});
+		res.status(200).json(event);
 	};
 
-	const getAllEvents = async (req, res) => {
-		Event.see({})
-		  .then((events) => {
-				res.json({ success: true, events });
-		  })
-		  .catch((err) => {
-				console.log(err);
-				res.status(500).json({
-			  success: false,
-			  message: 'An Error Occured, please try again later',
-				});
-		  });
+	const list = async (req, res) => {
+		const events = await Event.find({});
+		return res.status(200).json(events);
 	};
 
 	return {
-		addEvent: asyncHandler(addEvent),
-		getAllEvents: asyncHandler(getAllEvents),
+		create: asyncHandler(create),
+		list: asyncHandler(list),
 	};
 };
