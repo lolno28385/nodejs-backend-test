@@ -28,7 +28,7 @@ const logger = winston.createLogger({
 				winston.format.colorize(),
 				winston.format.simple()
 			),
-			silent: (process.env.SHOW_LOGS === 'true')
+			silent: (process.env.SHOW_LOGS === 'false')
 		})
 	]
 });
@@ -91,9 +91,9 @@ initializeDb( db => {
 		//send response
 		res.status(error.status || 500);
 
-		// logger.error(`error has happened: ${ error.message }`);
+		logger.error(`error has happened: ${ error.message }`);
 
-		if (process.env.NODE_ENV === 'development'){
+		if (process.env.DEBUG_MODE === 'true'){
 			return res.json({
 				message: error.message,
 				stack: error.stack,

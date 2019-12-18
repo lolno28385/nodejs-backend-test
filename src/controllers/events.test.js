@@ -3,7 +3,8 @@ import chai from 'chai';
 import assert from 'assert';
 import getEventsHandler from './events';
 import app from '../index';
-import { mockDependencies } from '../lib/util';
+import { mockDependencies, getRandomNumber } from '../lib/util';
+import Event from '../models/events';
 
 
 const should = chai.should(); //eslint-disable-line
@@ -30,18 +31,11 @@ describe.skip('Events Controller', () => {
 	});
 });
 
-describe('Events Controller - create', () => {
+describe.skip('Events Controller - create', () => {
 	const firstUser = {
 		firstName: 'sina',
 		lastName: 'montazeri',
 		email:'sinamonta@gmail.com',
-		password: 'pass123'
-	};
-
-	const secondUser = {
-		firstName: 'ali',
-		lastName: 'gerdabi',
-		email:'aligetdabi@gmail.com',
 		password: 'pass123'
 	};
     
@@ -85,7 +79,6 @@ describe('Events Controller - create', () => {
     
 	it('should return a 409 response when creating a duplicate event', (done) => {
 		let requester = chai.request(app).keepOpen();
-
 		// create user
 		requester.post('/user').send(firstUser).end(() => {
 			// create event
@@ -99,4 +92,98 @@ describe('Events Controller - create', () => {
 			});
 		});
 	});
+});
+
+
+describe('Events Controller - list', () => {
+	const firstUser = {
+		firstName: 'sina',
+		lastName: 'montazeri',
+		email:'sinamonta@gmail.com',
+		password: 'pass123'
+	};
+    
+	const secondUser = {
+		firstName: 'ali',
+		lastName: 'gerdabi',
+		email:'aligetdabi@gmail.com',
+		password: 'pass123'
+	};
+    
+	const event = {
+		start: new Date('2019-01-01'),
+		end: new Date('2019-02-01'),
+		title: 'event title',
+		details: 'event details',
+	};
+
+	it('should return all events in the system', (done) => {
+		let requester = chai.request(app).keepOpen();
+		// create user and some events
+		requester.post('/user').send(firstUser).end(async () => {
+			for(let i = 0 ; i< 10; i++){
+				const location = {
+					lat: getRandomNumber(100000, 900000),
+					lng: getRandomNumber(100000, 900000),
+					address: 'waaaat'
+				};
+				await requester.post(`/event/${firstUser.email}`).send({...event, location});
+			}			
+		});
+		//create another user and some events
+		requester.post('/user').send(secondUser).end(async () => {
+			for(let i = 0 ; i< 10; i++){
+				const location = {
+					lat: getRandomNumber(100000, 900000),
+					lng: getRandomNumber(100000, 900000),
+					address: 'waaaat'
+				};
+				await requester.post(`/event/${secondUser.email}`).send({...event, location});
+			}
+            
+			requester.get('/event').end((req, res) => {
+				res.should.have.status(200);
+				res.body.should.have.lengthOf(20);
+				requester.close();
+				done();
+			});
+		});
+
+	}).timeout(30000);
+    
+	it('should return all events for a user and only events for user', (done) => {
+		let requester = chai.request(app).keepOpen();
+		// create user and some events
+		requester.post('/user').send(firstUser).end(async () => {
+			for(let i = 0 ; i< 10; i++){
+				const location = {
+					lat: getRandomNumber(100000, 900000),
+					lng: getRandomNumber(100000, 900000),
+					address: 'waaaat'
+				};
+				await requester.post(`/event/${firstUser.email}`).send({...event, location});
+			}			
+		});
+        
+		//create another user and some events
+		requester.post('/user').send(secondUser).end(async () => {
+			for(let i = 0 ; i< 10; i++){
+				const location = {
+					lat: getRandomNumber(100000, 900000),
+					lng: getRandomNumber(100000, 900000),
+					address: 'waaaat'
+				};
+				await requester.post(`/event/${secondUser.email}`).send({...event, location});
+			}
+            
+			requester.get(`/event/${secondUser.email}`).end((req, res) => {
+				res.should.have.status(200);
+				const recordsBelongToUser = res.body.map(item=> item.owner).every((val, i, arr) => val === arr[0]);
+				assert(recordsBelongToUser, true);
+				requester.close();
+				done();
+			});
+		});
+
+	}).timeout(30000);
 });

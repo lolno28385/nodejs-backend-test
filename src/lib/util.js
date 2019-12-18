@@ -23,3 +23,8 @@ export function toRes(res, status=200) {
 export const mockDependencies  = {
 	asyncHandler: () => {}
 };
+
+
+export function getRandomNumber(min, max) {
+	return Math.random() * (max - min) + min;
+}

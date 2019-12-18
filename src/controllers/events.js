@@ -46,6 +46,7 @@ export default ({ asyncHandler, errors, logger }) => {
 		}
 
 		logger.info(`4 - create event - creating event ${email}`, {end, start, location, title, details});
+
 		const event = new Event({
 			end,
 			start,
@@ -57,17 +58,35 @@ export default ({ asyncHandler, errors, logger }) => {
 
 		await event.save();
 
-		logger.info(`2 - create event - finished processing ${email}`, {end, start, location, title, details});
+		logger.info(`5 - create event - finished processing ${email}`, {end, start, location, title, details});
 		res.status(200).json(event);
 	};
 
 	const list = async (req, res) => {
 		const events = await Event.find({});
+
+		logger.info(`get all events - returning ${events.length} records`);
+		return res.status(200).json(events);
+	};
+
+	const listForUser = async (req, res) => {
+		const { ownerEmail: email } = req.params;
+
+		const user = await User.findOne({email});
+
+		if(!user) {
+			throw errors.userNotFound({email});
+		}
+
+		const {_id: owner} = user;
+
+		const events = await Event.find({ owner });
 		return res.status(200).json(events);
 	};
 
 	return {
 		create: asyncHandler(create),
 		list: asyncHandler(list),
+		listForUser: asyncHandler(listForUser),
 	};
 };
