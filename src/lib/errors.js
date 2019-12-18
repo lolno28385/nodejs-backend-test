@@ -37,4 +37,13 @@ export default {
 			context
 		}
 	)),
+	eventAlreadyExists: (context) => (createError(
+		409,
+		'can not process request',
+		{
+			description: 'event already exists',
+			expose: (process.env.NODE_ENV !== 'development'),
+			context
+		}
+	)),
 };
