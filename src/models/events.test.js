@@ -54,8 +54,8 @@ describe.skip('Events Model', function() {
 	it('should be invalid if either location.lat or location.lng are empty', function(done) {
 		const event = new Event();
 		event.validate(function(err) {
-			expect(err.errors['location.latLng.lat']).to.exist;
-			expect(err.errors['location.latLng.lng']).to.exist;
+			expect(err.errors['location.lat']).to.exist;
+			expect(err.errors['location.lng']).to.exist;
 			done();
 		});
 	});

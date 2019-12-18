@@ -34,7 +34,7 @@ export default ({asyncHandler, logger, errors}) => {
 			});
 			logger.info(` 3 - creating user - signup request email:${email}`);
 			await newUser.save();
-			res.status(200).send();
+			res.status(200).json(newUser);
 		});
 	};
    

@@ -3,11 +3,11 @@ import eventsHandlers from '../controllers/events';
 
 export default (deps) => {
 	let router = Router();
-	const {getAllEvents, addEvent } = eventsHandlers(deps);
+	const { create, list } = eventsHandlers(deps);
 
 	// mount the facets resource
-	router.post('/', addEvent);
-	router.get('/', getAllEvents);
+	router.post('/:ownerEmail', create);
+	router.get('/', list);
 	
 	return router;
 };

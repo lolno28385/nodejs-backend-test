@@ -11,10 +11,8 @@ const eventSchema = new Schema(
 		owner: { type: ObjectId, required: true },
 		location: {
 			address: { type: String, required: true },
-			latLng: {
-				lat: { type: Number, required: true },
-				lng: { type: Number, required: true },
-			},
+			lat: { type: Number, required: true },
+			lng: { type: Number, required: true },
 		},
 	},
 	{

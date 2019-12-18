@@ -2,39 +2,31 @@ import chaiHttp from 'chai-http';
 import chai from 'chai';
 import assert from 'assert';
 import getUserHandlers from './users';
-import getMockDependencies from '../lib/mockDependencies';
 import app from '../index';
+import { mockDependencies } from '../lib/util';
 
 
 const should = chai.should(); //eslint-disable-line
 chai.use(chaiHttp);
 
-process.env.NODE_ENV = 'test';
-
 describe.skip('Users Controller', () => {
 	// const dependencies = await runDB();
 	it('should include an update method',  (done) => {
-		getMockDependencies().then(dependencies => {
-			done();
-        
-			const {
-				update,
-			} = getUserHandlers(dependencies);
+		const {
+			update,
+		} = getUserHandlers(mockDependencies);
 
-			assert(typeof update, 'function');
-		});		
+		assert(typeof update, 'function');	
+		done();
 	});
 
 	it('should include an create method',  (done) => {
-		getMockDependencies().then(dependencies => {
-			done();
-        
-			const {
-				create,
-			} = getUserHandlers(dependencies);
+		const {
+			create,
+		} = getUserHandlers(mockDependencies);
 
-			assert(typeof create, 'function');
-		});		
+		assert(typeof create, 'function');	
+		done();
 	});
 });
 
@@ -51,6 +43,10 @@ describe.skip('Users controller - create user', () => {
 
 		requester.post('/user/create').send(newUserBody).end((err, res) => {
 			res.should.have.status(200);
+			res.body.should.have.property('passwordHash');
+			res.body.firstName.should.equal(newUserBody.firstName);
+			res.body.lastName.should.equal(newUserBody.lastName);
+			res.body.email.should.equal(newUserBody.email);
 			requester.close();
 			done();
 		});

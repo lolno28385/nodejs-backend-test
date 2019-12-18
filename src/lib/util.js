@@ -18,3 +18,8 @@ export function toRes(res, status=200) {
 		res.status(status).json(thing);
 	};
 }
+
+
+export const mockDependencies  = {
+	asyncHandler: () => {}
+};
