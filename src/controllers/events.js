@@ -1,5 +1,6 @@
 import Event from '../models/events';
 import User from '../models/users';
+import R from 'ramda';
 
 export default ({ asyncHandler, errors, logger }) => {
 	const create = async (req, res) => {
@@ -63,7 +64,7 @@ export default ({ asyncHandler, errors, logger }) => {
 	};
 
 	const list = async (req, res) => {
-		const events = await Event.find({});
+		const events = await Event.find({}, {}, {limit: 100});
 
 		logger.info(`get all events - returning ${events.length} records`);
 		return res.status(200).json(events);
@@ -80,13 +81,43 @@ export default ({ asyncHandler, errors, logger }) => {
 
 		const {_id: owner} = user;
 
-		const events = await Event.find({ owner });
+		const events = await Event.find({ owner }, {}, {limit: 100});
 		return res.status(200).json(events);
+	};
+
+	const listPerUser = async (req, res) => {
+
+		const users = await User.find({}, {}, {limit: 10});
+
+		const events = [];
+		let owners = [];
+		users.forEach(user =>{
+			const {_id: owner} = user;
+			events.push(Event.find({ owner }, {}, { limit: 100}));
+			owners.push(owner);
+		});
+
+		Promise.all(events).then(
+			eventsForUser => {
+				const data = [];
+				owners.forEach(owner => {
+					const { firstName, lastName, email } = R.find(R.propEq('_id', owner))(users);
+					const datum = {
+						firstName,
+						lastName,
+						email,
+						events: eventsForUser
+					};
+					data.push(datum);
+				});
+				return res.status(200).json(data);
+			});
 	};
 
 	return {
 		create: asyncHandler(create),
 		list: asyncHandler(list),
 		listForUser: asyncHandler(listForUser),
+		listPerUser: asyncHandler(listPerUser),
 	};
 };

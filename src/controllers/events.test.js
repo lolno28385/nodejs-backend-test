@@ -4,7 +4,6 @@ import assert from 'assert';
 import getEventsHandler from './events';
 import app from '../index';
 import { mockDependencies, getRandomNumber } from '../lib/util';
-import Event from '../models/events';
 
 
 const should = chai.should(); //eslint-disable-line
@@ -161,7 +160,7 @@ describe('Events Controller - list', () => {
 					lng: getRandomNumber(100000, 900000),
 					address: 'waaaat'
 				};
-				await requester.post(`/event/${firstUser.email}`).send({...event, location});
+				await requester.post(`/event/user/${firstUser.email}`).send({...event, location});
 			}			
 		});
         
@@ -176,7 +175,7 @@ describe('Events Controller - list', () => {
 				await requester.post(`/event/${secondUser.email}`).send({...event, location});
 			}
             
-			requester.get(`/event/${secondUser.email}`).end((req, res) => {
+			requester.get(`/event/user/${secondUser.email}`).end((req, res) => {
 				res.should.have.status(200);
 				const recordsBelongToUser = res.body.map(item=> item.owner).every((val, i, arr) => val === arr[0]);
 				assert(recordsBelongToUser, true);
